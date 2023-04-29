@@ -121,7 +121,6 @@ Password stealing:
 process_name:"mimikatz.exe" AND (command_line:"privilege::debug" OR command_line:"sekurlsa::logonpasswords" OR command_line:"lsadump::sam") AND netconn_count:>0
 process_name:"powershell.exe" AND (command_line:"get-winevent" OR command_line:"get-eventlog") AND netconn_count:>0
 process_name:"cmdkey.exe" AND (command_line:"/list" OR command_line:"/add") AND netconn_count:>0
-Remember that these queries are just examples and should be customized based on the specific environment and threats that the organization faces. It is important to continuously monitor and update these queries to ensure they remain effective in detecting threats. Additionally, it is important to have a clear understanding of what constitutes normal behavior in the organization's environment in order to identify anomalies that may indicate a threat.
 
 Network scanning:
 process_name:"nmap.exe" AND netconn_count:>0
@@ -137,6 +136,9 @@ Ransomware:
 process_name:"vssadmin.exe" AND (command_line:"delete shadows" OR command_line:"delete shadows /all" OR command_line:"resize shadowstorage") AND netconn_count:>0
 process_name:"powershell.exe" AND (command_line:"get-childitem -recurse" OR command_line:"get-content -path") AND netconn_count:>0
 process_name:"taskmgr.exe" AND command_line:"/c netstat -nao" AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"invoke-expression" OR command_line:"new-object system.net.webclient; $client.DownloadString") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"vssadmin delete shadows /all /quiet" OR command_line:"wmic shadowcopy delete") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"kernel32.dll" OR command_line:"msvcrt.dll") AND netconn_count:>0
 
 Exploits:
 process_name:"cmd.exe" AND (command_line:"mshta http://" OR command_line:"wmic process call create") AND netconn_count:>0
@@ -213,82 +215,33 @@ netconn_count:>50
 protocol:icmp AND netconn_count:>0
 protocol:udp AND netconn_count:>0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Active directory reconnaissance:
+process_name:"powershell.exe" AND (command_line:"get-adgroupmember" OR command_line:"get-adcomputer" OR command_line:"get-aduser") AND netconn_count:>0
+process_name:"net.exe" AND (command_line:"group" OR command_line:"user") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"useraccount" OR command_line:"computer") AND netconn_count:>0
+
+Suspicious logins:
+process_name:"powershell.exe" AND (command_line:"get-winevent -FilterHashTable" OR command_line:"get-eventlog -newest") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"net user" OR command_line:"net localgroup administrators") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"C:\ProgramData\temp.dll" OR command_line:"C:\ProgramData\temp.dll,entry") AND netconn_count:>0
+
+Malicious activity:
+process_name:"powershell.exe" AND (command_line:"new-object net.webclient" OR command_line:"(new-object net.webclient).downloadstring") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"msvcrt.dll" OR command_line:"kernel32.dll") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"bitsadmin" OR command_line:"certutil") AND netconn_count:>0
+
+Data infiltration:
+process_name:"powershell.exe" AND (command_line:"$client.UploadFile" OR command_line:"$client.DownloadFile") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"bitsadmin" OR command_line:"certutil") AND netconn_count:>0
+process_name:"outlook.exe" AND (command_line:"/a" OR command_line:"/f" OR command_line:"/attach") AND netconn_count:>0
+
+Suspicious outgoing traffic:
+process_name:"powershell.exe" AND (command_line:"invoke-webrequest" OR command_line:"invoke-restmethod") AND netconn_count:>0
+process_name:"mshta.exe" AND (command_line:"mhtml:" OR command_line:"about:") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"os get" OR command_line:"process call create") AND netconn_count:>0
+
+Suspicious PowerShell usage:
+process_name:"powershell.exe" AND (command_line:"-nop -exec bypass" OR command_line:"-w hidden -enc") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"Get-Content" OR command_line:"Add-Type") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"set-executionpolicy unrestricted" OR command_line:"enable-psremoting -force") AND netconn_count:>0
 
