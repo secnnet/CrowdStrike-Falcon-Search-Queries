@@ -107,6 +107,115 @@ process_name:"mshta.exe" AND (command_line:"javascript:" OR command_line:"file:/
 process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
 process_name:"cmd.exe" AND (command_line:"certutil -urlcache -split -f" OR command_line:"bitsadmin /transfer") AND netconn_count:>0
 
+Malware:
+process_name:"winword.exe" AND (command_line:"/mFileSaveAsWebPage" OR command_line:"/mFilePrintDefault") AND netconn_count:>0
+process_name:"chrome.exe" AND (command_line:"--disable-extensions --disable-web-security" OR command_line:"--disable-web-security") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+
+Data manipulation:
+process_name:"powershell.exe" AND (command_line:"add-content" OR command_line:"set-content" OR command_line:"get-content") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"cmd.exe" AND (command_line:"certutil -decode" OR command_line:"certutil -encode") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Password stealing:
+process_name:"mimikatz.exe" AND (command_line:"privilege::debug" OR command_line:"sekurlsa::logonpasswords" OR command_line:"lsadump::sam") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"get-winevent" OR command_line:"get-eventlog") AND netconn_count:>0
+process_name:"cmdkey.exe" AND (command_line:"/list" OR command_line:"/add") AND netconn_count:>0
+Remember that these queries are just examples and should be customized based on the specific environment and threats that the organization faces. It is important to continuously monitor and update these queries to ensure they remain effective in detecting threats. Additionally, it is important to have a clear understanding of what constitutes normal behavior in the organization's environment in order to identify anomalies that may indicate a threat.
+
+Network scanning:
+process_name:"nmap.exe" AND netconn_count:>0
+process_name:"ping.exe" AND netconn_count:>0 AND (query:"ping" OR query:"-n" OR query:"-c")
+process_name:"net.exe" AND (command_line:"/user" OR command_line:"/view" OR command_line:"/domain") AND netconn_count:>0
+
+Web application attacks:
+process_name:"python.exe" AND (command_line:"manage.py runserver" OR command_line:"./manage.py runserver") AND netconn_count:>0
+process_name:"iexplore.exe" AND (command_line:"/s" OR command_line:"/n") AND netconn_count:>0
+process_name:"chrome.exe" AND (command_line:"--disable-infobars --disable-background-networking" OR command_line:"--disable-web-security --user-data-dir") AND netconn_count:>0
+
+Ransomware:
+process_name:"vssadmin.exe" AND (command_line:"delete shadows" OR command_line:"delete shadows /all" OR command_line:"resize shadowstorage") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"get-childitem -recurse" OR command_line:"get-content -path") AND netconn_count:>0
+process_name:"taskmgr.exe" AND command_line:"/c netstat -nao" AND netconn_count:>0
+
+Exploits:
+process_name:"cmd.exe" AND (command_line:"mshta http://" OR command_line:"wmic process call create") AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"javascript:" OR command_line:"data:") AND netconn_count:>0
+
+Brute force attacks:
+process_name:"powershell.exe" AND (command_line:"get-aduser" OR command_line:"test-connection") AND netconn_count:>0
+process_name:"ssh" AND query:"login:" AND netconn_count:>0
+process_name:"sqlcmd.exe" AND (command_line:"-S" OR command_line:"-U" OR command_line:"-P") AND netconn_count:>0
+
+Endpoint attacks:
+process_name:"svchost.exe" AND (command_line:"netsvcs" OR command_line:"wscsvc") AND netconn_count:>0
+process_name:"mshta.exe" AND (command_line:"mhtml:" OR command_line:"about:") AND netconn_count:>0
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Webshell:
+process_name:"iexplore.exe" AND command_line:"-k" AND netconn_count:>0
+process_name:"cmd.exe" AND command_line:"powershell -nop -c "$client = New-Object Net.WebClient; $client.DownloadString('http://" AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"iex (new-object net.webclient).downloadstring" OR command_line:"invoke-expression (new-object net.webclient).downloadstring") AND netconn_count:>0
+
+File integrity monitoring:
+process_name:"powershell.exe" AND (command_line:"new-item -type file" OR command_line:"copy-item" OR command_line:"move-item" OR command_line:"remove-item") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"cmd.exe" AND (command_line:"expand" OR command_line:"comp") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Advanced persistent threats:
+process_name:"powershell.exe" AND (command_line:"invoke-expression" OR command_line:"new-object System.Net.WebClient") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"xcopy" OR command_line:"bitsadmin") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"process call create" OR command_line:"os get") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Phishing:
+process_name:"powershell.exe" AND (command_line:"invoke-expression (New-Object Net.WebClient).DownloadString" OR command_line:"iex (New-Object Net.WebClient).DownloadString") AND netconn_count:>0
+process_name:"iexplore.exe" AND (command_line:"-noframemerging" OR command_line:"-noframemerging -extoff") AND netconn_count:>0
+process_name:"winword.exe" AND command_line:"/mFileNewDefault" AND netconn_count:>0
+
+Insider threats:
+process_name:"powershell.exe" AND (command_line:"get-winevent" OR command_line:"get-eventlog") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"net user" OR command_line:"net localgroup administrators") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"C:\ProgramData\temp.dll" OR command_line:"C:\ProgramData\temp.dll,entry") AND netconn_count:>0
+
+Privilege escalation:
+process_name:"powershell.exe" AND (command_line:"start-process" OR command_line:"$s=New-Object" OR command_line:"Set-ItemProperty") AND netconn_count:>0
+process_name:"net.exe" AND command_line:"use" AND netconn_count:>0
+process_name:"reg.exe" AND (command_line:"add" OR command_line:"delete") AND (filemod_count:>0 OR registrymod_count:>0 OR netconn_count:>0)
+
+Command and control:
+process_name:"powershell.exe" AND (command_line:"new-object System.Net.Sockets.TcpClient" OR command_line:"new-object Net.Sockets.TcpClient" OR command_line:"new-object System.Net.WebClient") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"url.dll,OpenURL") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"nslookup" OR command_line:"tracert" OR command_line:"ping") AND netconn_count:>0
+
+Data exfiltration:
+process_name:"powershell.exe" AND (command_line:"$client.UploadFile" OR command_line:"$client.DownloadFile") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"bitsadmin" OR command_line:"certutil") AND netconn_count:>0
+process_name:"outlook.exe" AND (command_line:"/a" OR command_line:"/f" OR command_line:"/attach") AND netconn_count:>0
+
+Suspicious activity:
+process_name:"powershell.exe" AND (command_line:"invoke-webrequest" OR command_line:"invoke-restmethod") AND netconn_count:>0
+process_name:"mshta.exe" AND (command_line:"mhtml:" OR command_line:"about:") AND netconn_count:>0
+process_name:"wmic.exe" AND (command_line:"os get" OR command_line:"process call create") AND netconn_count:>0
+
+Malware:
+process_name:"powershell.exe" AND (command_line:"invoke-expression (new-object system.net.webclient).downloadfile" OR command_line:"new-object system.net.webclient; $client.DownloadFile") AND netconn_count:>0
+process_name:"rundll32.exe" AND (command_line:"dllname.dll, entrypoint") AND netconn_count:>0
+process_name:"cmd.exe" AND (command_line:"certutil" OR command_line:"bitsadmin") AND netconn_count:>0
+
+Network scanning:
+process_name:"nmap.exe" AND netconn_count:>0
+process_name:"ping.exe" AND netconn_count:>0
+process_name:"powershell.exe" AND (command_line:"test-netconnection" OR command_line:"test-connection") AND netconn_count:>0
+
+Suspicious network activity:
+netconn_count:>50
+protocol:icmp AND netconn_count:>0
+protocol:udp AND netconn_count:>0
+
+
+
+
 
 
 
