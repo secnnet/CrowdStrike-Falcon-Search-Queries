@@ -1,0 +1,299 @@
+List all processes with the keyword "nmap" in the command line:
+process_name:nmap*
+
+Identify suspicious network connections with the keyword "port scan":
+netconn_count:[5 TO *] AND (netconn_dns:ports scan* OR netconn_ip:ports scan*)
+
+Search for any instances of suspicious file creation activities:
+event_simpleName:CreateFile AND event_type:file_created AND file_name:cmd.exe AND file_path:Temp\
+
+Look for reconnaissance activities targeting system information:
+event_simpleName:ProcessCreate AND process_name:systeminfo.exe
+
+Identify attempts to exploit known vulnerabilities:
+(event_simpleName:ProcessCreate AND process_name:mshta.exe) OR (event_simpleName:ProcessCreate AND process_name:rundll32.exe AND command_line:*CVE*)
+
+Identify suspicious DNS queries:
+netconn_dns:nslookup* OR netconn_dns:whois* OR netconn_dns:hostname*
+
+Search for network traffic containing suspicious keywords:
+netconn_count:[5 TO *] AND (netconn_dns:hack* OR netconn_ip:hack* OR netconn_dns:backdoor* OR netconn_ip:backdoor*)
+
+Identify attempts to enumerate running processes:
+event_simpleName:ProcessCreate AND process_name:tasklist.exe
+
+Look for reconnaissance activities targeting network information:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe)
+
+Identify attempts to gather account information:
+(event_simpleName:ProcessCreate AND process_name:net.exe) OR (event_simpleName:ProcessCreate AND process_name:dsquery.exe)
+
+Identify attempts to enumerate users and groups:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:*user*) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:*group*)
+
+Look for attempts to gather system configuration information:
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SYSTEM\ CurrentControlSet\ Services\ Tcpip\ Parameters)
+
+Identify attempts to gather information about installed software:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall)
+
+Look for attempts to gather information about network shares:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about domain controllers:
+(event_simpleName:ProcessCreate AND process_name:nltest.exe AND command_line:dsgetdc) OR (event_simpleName:ProcessCreate AND process_name:ping.exe AND command_line:ldap*)
+
+Identify attempts to scan for open ports:
+(event_simpleName:ProcessCreate AND process_name:nmap.exe AND command_line:-sT) OR (event_simpleName:ProcessCreate AND process_name:masscan.exe)
+
+Look for attempts to gather information about installed security software:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "name like '%antivirus%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%antivirus%'" )
+
+Identify attempts to gather information about network devices:
+(event_simpleName:ProcessCreate AND process_name:tracert.exe) OR (event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Look for attempts to gather information about connected devices:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:logicaldisk get caption, description, size) OR (event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:nicconfig get description, IPAddress, MACAddress)
+
+Identify attempts to gather information about cloud infrastructure:
+(event_simpleName:ProcessCreate AND process_name:aws.exe AND command_line:ec2 describe-instances) OR (event_simpleName:ProcessCreate AND process_name:gcloud.exe AND command_line:compute instances list) OR (event_simpleName:ProcessCreate AND process_name:az.exe AND command_line:vm list)
+
+Look for attempts to gather information about running services:
+(event_simpleName:ProcessCreate AND process_name:sc.exe AND command_line:query) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:service)
+
+Identify attempts to gather information about domain names:
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about wire networks:
+(event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:wlan show networks mode=bssid) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:wlan show profiles)
+
+Identify attempts to gather information about open shares:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Look for attempts to gather information about users:
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:user) OR (event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:useraccount)
+
+Look for attempts to gather information about running applications:
+(event_simpleName:ProcessCreate AND process_name:tasklist.exe) OR (event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:process list brief)
+
+Identify attempts to gather information about running web applications:
+(event_simpleName:ProcessCreate AND process_name:iisapp.vbs) OR (event_simpleName:ProcessCreate AND process_name:appcmd.exe)
+
+Look for attempts to gather information about virtual machines:
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-guestvmx.exe)
+
+Identify attempts to gather information about database servers:
+(event_simpleName:ProcessCreate AND process_name:sqlcmd.exe) OR (event_simpleName:ProcessCreate AND process_name:mssql-conf)
+
+Look for attempts to gather information about directory services:
+(event_simpleName:ProcessCreate AND process_name:dsquery.exe) OR (event_simpleName:ProcessCreate AND process_name:ldp.exe)
+
+Look for attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe)
+
+Identify attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Look for attempts to gather information about web server configuration:
+(event_simpleName:ProcessCreate AND process_name:httpd.exe -t -D DUMP_MODULES) OR (event_simpleName:ProcessCreate AND process_name:nginx.exe -t)
+
+Identify attempts to gather information about installed software with the keyword "product":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall)
+
+Look for attempts to gather information about system memory with the keyword "dump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe)
+
+Look for attempts to gather information about running processes with the keyword "tasklist":
+(event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Identify attempts to gather information about the domain controller:
+(event_simpleName:ProcessCreate AND process_name:nltest.exe AND command_line:dsgetdc) OR (event_simpleName:ProcessCreate AND process_name:ping.exe AND command_line:ldap*)
+
+Look for attempts to gather information about network interfaces:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show config)
+
+Identify attempts to gather information about web application frameworks:
+(event_simpleName:ProcessCreate AND process_name:python.exe AND command_line:manage.py runserver) OR (event_simpleName:ProcessCreate AND process_name:flask.exe) OR (event_simpleName:ProcessCreate AND process_name:rails.exe)
+
+Look for attempts to gather information about installed software with the keyword "uninstall":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "vendor like '%uninstall%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%uninstall%'" )
+
+Identify attempts to gather information about system hardware:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:csproduct get name) OR (event_simpleName:ProcessCreate AND process_name:systeminfo.exe)
+
+Look for attempts to gather information about installed software with the keyword "software":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "description like '%software%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%software%'" )
+
+Identify attempts to gather information about running processes with the keyword "pstools":
+(event_simpleName:ProcessCreate AND process_name:pslist.exe) OR (event_simpleName:ProcessCreate AND process_name:pskill.exe)
+
+Look for attempts to gather information about network devices with the keyword "arp":
+(event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Identify attempts to gather information about domain names with the keyword "domain":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe) OR (event_simpleName:ProcessCreate AND process_name:dig.exe)
+
+Look for attempts to gather information about network adapters:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe /all) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "process":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:process get caption,commandline,processid) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about user accounts:
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:useraccount) OR (event_simpleName:ProcessCreate AND process_name:net.exe user)
+
+Identify attempts to gather information about network interfaces:
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show config)
+
+Look for attempts to gather information about installed software with the keyword "application":
+(event_simpleName:ProcessCreate AND process_name:wmic.exe AND command_line:product where "description like '%application%'" ) OR (event_simpleName:ProcessCreate AND process_name:reg.exe AND command_line:query\ HKEY_LOCAL_MACHINE\ SOFTWARE\ Microsoft\ Windows\ CurrentVersion\ Uninstall where "displayName like '%application%'" )
+
+Look for attempts to gather information about network protocols:
+(event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show offload) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int tcp show global)
+
+Identify attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Identify attempts to gather information about virtual machines:
+(event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe) OR (event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe)
+
+Look for attempts to gather information about system memory with the keyword "memdump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe) OR (event_simpleName:ProcessCreate AND process_name:dumpcap.exe)
+
+Look for attempts to gather information about network services with the keyword "netstat":
+(event_simpleName:ProcessCreate AND process_name:netstat.exe -ano) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe -bano)
+
+Identify attempts to gather information about system information with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Look for attempts to gather information about network adapters with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Identify attempts to gather information about virtual machines:
+(event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe) OR (event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe)
+
+Look for attempts to gather information about system memory with the keyword "memdump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe) OR (event_simpleName:ProcessCreate AND process_name:dumpcap.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Identify attempts to gather information about system information with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Look for attempts to gather information about network adapters with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about network protocols:
+(event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int ip show offload) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe AND command_line:int tcp show global)
+
+Look for attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Identify attempts to gather information about network adapters with the keyword "arp":
+(event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Look for attempts to gather information about virtual machines with the keyword "vmtools":
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe)
+
+Look for attempts to gather information about network interfaces with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Identify attempts to gather information about network services with the keyword "netstat":
+(event_simpleName:ProcessCreate AND process_name:netstat.exe -ano) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe -bano)
+
+Look for attempts to gather information about system hardware with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Look for attempts to gather information about network protocols with the keyword "netsh":
+(event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv4 show route) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv6 show route)
+
+Identify attempts to gather information about network interfaces with the keyword "ip addr":
+(event_simpleName:ProcessCreate AND process_name:ip.exe addr show) OR (event_simpleName:ProcessCreate AND process_name:ipconfig.exe /all)
+
+Look for attempts to gather information about system information with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Identify attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Look for attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Identify attempts to gather information about network adapters with the keyword "arp":
+(event_simpleName:ProcessCreate AND process_name:arp.exe -a)
+
+Look for attempts to gather information about virtual machines with the keyword "vmtools":
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about system memory with the keyword "memdump":
+(event_simpleName:ProcessCreate AND process_name:procdump.exe) OR (event_simpleName:ProcessCreate AND process_name:windbg.exe) OR (event_simpleName:ProcessCreate AND process_name:dumpcap.exe)
+
+Look for attempts to gather information about network protocols with the keyword "route":
+(event_simpleName:ProcessCreate AND process_name:route.exe print) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv4 show route) OR (event_simpleName:ProcessCreate AND process_name:netsh.exe interface ipv6 show route)
+
+Identify attempts to gather information about network interfaces with the keyword "ifconfig":
+(event_simpleName:ProcessCreate AND process_name:ifconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:ip addr show)
+
+Look for attempts to gather information about running processes with the keyword "task":
+(event_simpleName:ProcessCreate AND process_name:schtasks.exe /query) OR (event_simpleName:ProcessCreate AND process_name:tasklist.exe)
+
+Identify attempts to gather information about domain names with the keyword "nslookup":
+(event_simpleName:ProcessCreate AND process_name:nslookup.exe) OR (event_simpleName:ProcessCreate AND process_name:whois.exe)
+
+Look for attempts to gather information about network services with the keyword "netstat":
+(event_simpleName:ProcessCreate AND process_name:netstat.exe -ano) OR (event_simpleName:ProcessCreate AND process_name:netstat.exe -bano)
+
+Look for attempts to gather information about system hardware with the keyword "systeminfo":
+(event_simpleName:ProcessCreate AND process_name:systeminfo.exe) OR (event_simpleName:ProcessCreate AND process_name:ver.exe)
+
+Identify attempts to gather information about running processes with the keyword "ps":
+(event_simpleName:ProcessCreate AND process_name:ps.exe) OR (event_simpleName:ProcessCreate AND process_name:pslist.exe)
+
+Look for attempts to gather information about network adapters with the keyword "ipconfig":
+(event_simpleName:ProcessCreate AND process_name:ipconfig.exe) OR (event_simpleName:ProcessCreate AND process_name:getmac.exe)
+
+Identify attempts to gather information about network shares with the keyword "net share":
+(event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:share) OR (event_simpleName:ProcessCreate AND process_name:net.exe AND command_line:view)
+
+Look for attempts to gather information about virtual machines with the keyword "vmtools":
+(event_simpleName:ProcessCreate AND process_name:vmtoolsd.exe) OR (event_simpleName:ProcessCreate AND process_name:vmware-vmsvc.exe)
